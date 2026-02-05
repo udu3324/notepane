@@ -1,8 +1,11 @@
 services:
   website:
     build: .
+    environment:
+      DATABASE_URL: postgres://user:pass@localhost:5432/mydb
     ports:
       - '3000:3000'
+  
   db:
     image: postgres:latest
     environment:
