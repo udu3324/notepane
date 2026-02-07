@@ -6,15 +6,29 @@
     let authenticated = false
 
     let notes = []
-    let input
+    let input = ""
+    let publicURLCreation = false
+    let publicPaneCreation = false
 
     let deletedNotes = []
 
-    onMount(() => {
+    let selected
+    let textAreaMarkdown
+    let publicURL
+    let publicPane
 
-        if (localStorage.getItem("key") === null) {
-            goto(resolve("/login"))
+    $: {
+        if (selected) {
+            console.log("selected", selected)
+            textAreaMarkdown = selected.markdown
+            publicURL = selected.public_url
+            publicPane = selected.public_pane
         }
+    }
+
+    onMount(() => {
+        //check if has key stored
+        if (localStorage.getItem("key") === null) goto(resolve("/login"))
 
         fetch('/api/auth', {
             method: "GET",
@@ -28,6 +42,7 @@
 
                 get()
             } else {
+                //invalid key
                 goto(resolve("/login"))
             }
         })
@@ -43,20 +58,28 @@
         .then(response=>response.json())
         .then((data) => {
             notes = data
-            console.log(notes)
+            //console.log(notes)
         })
     }
 
     function add() {
         fetch('/api/notes/create', {
-            method: "GET",
+            method: "POST",
             headers: {
-                "authorization": `Bearer ${localStorage.getItem("key").replaceAll("\"", "")}`,
-                "markdown": input
-            }
+                "authorization": `Bearer ${localStorage.getItem("key").replaceAll("\"", "")}`
+            },
+            body: JSON.stringify({
+                markdown: input,
+                public_url: publicURLCreation,
+                public_pane: publicPaneCreation
+            })
         })
         .then(response=>response.json())
         .then((data) => {
+            input = ''
+            publicURLCreation = false
+            publicPaneCreation = false
+
             //be efficient and dont do get()
             notes = [data, ...notes]
         })
@@ -64,11 +87,13 @@
 
     function remove(id) {
         fetch('/api/notes/remove', {
-            method: "GET",
+            method: "DELETE",
             headers: {
-                "authorization": `Bearer ${localStorage.getItem("key").replaceAll("\"", "")}`,
+                "authorization": `Bearer ${localStorage.getItem("key").replaceAll("\"", "")}`
+            },
+            body: JSON.stringify({
                 "id": id
-            }
+            })
         })
         .then(response=>response.json())
         .then((data) => {
@@ -82,24 +107,65 @@
             notes = notes
         })
     }
+
+    function submitModification(markdown, publicURL, publicPane) {
+        fetch('/api/notes/modify', {
+            method: "POST",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("key").replaceAll("\"", "")}`,
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: selected.id,
+                markdown: markdown,
+                public_url: publicURL,
+                public_pane: publicPane
+            })
+        })
+        .then(response=>response.json())
+        .then((data) => {
+            //console.log("updated", data)
+
+            let index = notes.findIndex((note) => note.id === selected.id)
+            notes[index] = data
+        })
+    }
 </script>
 
 {#if authenticated}
 <div>
     good
-
+    
     <div class="border-2 border-solid w-fit">
         control panel
         <div class="border-2 border-solid">
-            <input bind:value={input} type="text" placeholder="markdown">
+            <textarea bind:value={input} type="text" placeholder="markdown"></textarea>
+            <br>
+            <input type="checkbox" bind:checked={publicURLCreation}> public url
+            <input type="checkbox" bind:checked={publicPaneCreation}> public pane
+            <br>
             <button on:click={add}>add note</button>
         </div>
-        <button on:click={get}>get notes</button>
     </div>
+
+    {#if selected}
+    <div class="border-2 border-solid w-fit">
+        modify panel
+
+        <textarea on:input={(e) => submitModification(e.target.value, undefined, undefined)} bind:value={textAreaMarkdown} placeholder="empty"></textarea>
+        <input on:input={() => submitModification(undefined, !publicURL, undefined)} type="checkbox" bind:checked={publicURL}> public url
+        <input on:input={() => submitModification(undefined, undefined, !publicPane)} type="checkbox" bind:checked={publicPane}> public pane
+        <br>
+        <button on:click={() => {selected = undefined}}>exit</button>
+        
+    </div>
+    {/if}
 
     {#each notes as note (note.id)}
     <div class="border-2 border-solid w-fit">
+        
         {note.id}
+        <button on:click={() => {selected = note}} class="border-2 border-solid">select</button>
         {note.markdown}
         <button on:click={() => remove(note.id)} class="border-2 border-solid">remove</button>
     </div>

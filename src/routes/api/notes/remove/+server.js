@@ -1,11 +1,11 @@
 import { PASSWORD } from "$env/static/private"
 import * as Notes from '$lib/server/notes'
 
-export async function GET({ request }) {
+export async function DELETE({ request }) {
     const auth_header = request.headers.get("Authorization")
     const key = auth_header?.replace("Bearer ", "").trim().replace("Bearer", "")
     
-    const id = request.headers.get("id")
+    let { id } = await request.json()
 
     if (!key) {
         return new Response(JSON.stringify({
@@ -24,9 +24,13 @@ export async function GET({ request }) {
                 error: "no id provided",
             }), { status: 400 })
     }
-    //todo check if id exists
-    
-    await Notes.migrate()
+
+    const check = await Notes.getNoteByID(id)
+    if (check === null) {
+        return new Response(JSON.stringify({
+                error: "id invalid",
+            }), { status: 400 })
+    }
 
     const data = await Notes.removeNote(id)
     

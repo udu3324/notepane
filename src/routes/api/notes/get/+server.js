@@ -17,7 +17,6 @@ export async function GET({ request }) {
             }), { status: 400 })
     }
     
-    await Notes.migrate()
 
     const data = await Notes.getNotes()
     

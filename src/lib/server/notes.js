@@ -6,7 +6,7 @@ export async function migrate() {
     if (migrated) return
     migrated = true
 
-    console.log("creating a new notes table")
+    console.log("checking/creating a new notes table")
 
     await sql`
         create table if not exists notes (
@@ -41,6 +41,8 @@ export async function migrate() {
 }
 
 export async function getNotes() {
+    await migrate()
+
     const notes = await sql`
         select * from notes order by created_at desc
     `
@@ -48,7 +50,9 @@ export async function getNotes() {
     return notes
 }
 
-export async function getNote(id) {
+export async function getNoteByID(id) {
+    await migrate()
+
     const [note] = await sql`
         select *
         from 
@@ -60,12 +64,61 @@ export async function getNote(id) {
     return note || null
 }
 
-export async function addNote(markdown) {
+export async function getNoteByUUID(uuid) {
+    await migrate()
+
+    const [note] = await sql`
+        select *
+        from 
+            notes
+        where
+            public_uuid = ${uuid}
+    `
+
+    return note || null
+}
+
+export async function addNote(markdown, public_url, public_pane) {
+    await migrate()
+
     const [note] = await sql`
         insert into notes 
-            (markdown)
+            (markdown, public_url, public_pane)
         values
-            (${markdown})
+            (${markdown}, ${public_url}, ${public_pane})
+        returning *
+    `
+
+    return note
+}
+
+export async function modifyNote(id, markdown, public_url, public_pane) {
+    await migrate()
+
+
+    //replace any missing data with old data
+    const oldData = await getNoteByID(id)
+
+    if (markdown === undefined) {
+        markdown = oldData.markdown
+    }
+
+    if (public_url === undefined) {
+        public_url = oldData.public_url
+    }
+    
+    if (public_pane === undefined) {
+        public_pane = oldData.public_pane
+    }
+
+    const [note] = await sql`
+        update notes
+        set 
+            modified_at = now(),
+            markdown = ${markdown},
+            public_url = ${public_url},
+            public_pane = ${public_pane}
+        where id = ${id}
         returning *
     `
 
@@ -73,6 +126,8 @@ export async function addNote(markdown) {
 }
 
 export async function removeNote(id) {
+    await migrate()
+
     const [note] = await sql`
         delete from notes
         where

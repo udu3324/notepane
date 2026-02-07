@@ -16,7 +16,7 @@
         })
         .then(response=>response.json())
         .then((data) => {
-            console.log("res", data)
+            //console.log("res", data)
             if (data.error) {
                 status = data.error
             } else if (data.status) {

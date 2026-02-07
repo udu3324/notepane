@@ -4,9 +4,16 @@ import * as Notes from '$lib/server/notes'
 export async function POST({ request }) {
     const auth_header = request.headers.get("Authorization")
     const key = auth_header?.replace("Bearer ", "").trim().replace("Bearer", "")
-    
-    const { markdown, public_url, public_pane } = await request.json()
-    
+
+    let { id, markdown, public_url, public_pane } = await request.json()
+
+    //convert to bool (if present)
+    if (typeof public_url === "string") {
+        public_url = (public_url === 'true')
+    }
+    if (typeof public_pane === "string") {
+        public_pane = (public_pane === 'true')
+    }
 
     if (!key) {
         return new Response(JSON.stringify({
@@ -19,21 +26,21 @@ export async function POST({ request }) {
                 error: "invalid key",
             }), { status: 400 })
     }
-
-    if (!markdown) {
+    
+    if (!id) {
         return new Response(JSON.stringify({
-                error: "no markdown provided",
+                error: "no id provided",
             }), { status: 400 })
     }
 
-    if (typeof public_url !== "boolean" || typeof public_pane !== "boolean") {
+    if (markdown === undefined && public_url === undefined && public_pane === undefined) {
         return new Response(JSON.stringify({
-                error: "invalid public_url/public_pane provided",
+                error: "need to provide atleast markdown, public url, or public pane",
             }), { status: 400 })
     }
     
 
-    const data = await Notes.addNote(markdown, public_url, public_pane)
+    const data = await Notes.modifyNote(id, markdown, public_url, public_pane)
     
     return new Response(JSON.stringify(data), { status: 200 })
 }
