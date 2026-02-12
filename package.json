@@ -33,6 +33,7 @@
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^7.1.0",
-		"postgres": "^3.4.8"
+		"postgres": "^3.4.8",
+		"rate-limiter-flexible": "^9.1.1"
 	}
 }
