@@ -29,6 +29,7 @@ export async function GET({ params, request }) {
         delete sensitive.id
         delete sensitive.public_url
         delete sensitive.public_pane
+        delete sensitive.pinned
         
         return new Response(JSON.stringify(sensitive), { status: 200 })
     }

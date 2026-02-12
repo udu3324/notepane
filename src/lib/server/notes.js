@@ -17,26 +17,9 @@ export async function migrate() {
             markdown text null,
             public_uuid UUID default gen_random_uuid() unique,
             public_url boolean default false,
-            public_pane boolean default false
+            public_pane boolean default false,
+            pinned boolean default false
         )
-    `
-
-    //toodo remove this stuff below after publish but add in future updates
-    await sql`
-        alter table notes
-        add column if not exists modified_at timestamp with time zone null default now()
-    `
-    await sql`
-        alter table notes
-        add column if not exists public_url boolean default false
-    `
-    await sql`
-        alter table notes
-        add column if not exists public_pane boolean default false
-    `
-    await sql`
-        alter table notes
-        add column if not exists public_uuid UUID default gen_random_uuid() unique
     `
 }
 
@@ -92,7 +75,7 @@ export async function addNote(markdown, public_url, public_pane) {
     return note
 }
 
-export async function modifyNote(id, markdown, public_url, public_pane) {
+export async function modifyNote(id, markdown, public_url, public_pane, pinned) {
     await migrate()
 
 
@@ -111,13 +94,18 @@ export async function modifyNote(id, markdown, public_url, public_pane) {
         public_pane = oldData.public_pane
     }
 
+    if (pinned === undefined) {
+        pinned = oldData.pinned
+    }
+
     const [note] = await sql`
         update notes
         set 
             modified_at = now(),
             markdown = ${markdown},
             public_url = ${public_url},
-            public_pane = ${public_pane}
+            public_pane = ${public_pane},
+            pinned = ${pinned}
         where id = ${id}
         returning *
     `

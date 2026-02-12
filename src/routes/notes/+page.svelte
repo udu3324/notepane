@@ -16,6 +16,7 @@
     let textAreaMarkdown
     let publicURL
     let publicPane
+    let pinned
 
     $: {
         if (selected) {
@@ -23,6 +24,7 @@
             textAreaMarkdown = selected.markdown
             publicURL = selected.public_url
             publicPane = selected.public_pane
+            pinned = selected.pinned
         }
     }
 
@@ -108,7 +110,8 @@
         })
     }
 
-    function submitModification(markdown, publicURL, publicPane) {
+    function submitModification(markdown, publicURL, publicPane, pinned) {
+        console.log(markdown, publicURL, publicPane, pinned)
         fetch('/api/notes/modify', {
             method: "POST",
             headers: {
@@ -119,7 +122,8 @@
                 id: selected.id,
                 markdown: markdown,
                 public_url: publicURL,
-                public_pane: publicPane
+                public_pane: publicPane,
+                pinned: pinned
             })
         })
         .then(response=>response.json())
@@ -152,9 +156,10 @@
     <div class="border-2 border-solid w-fit">
         modify panel
 
-        <textarea on:input={(e) => submitModification(e.target.value, undefined, undefined)} bind:value={textAreaMarkdown} placeholder="empty"></textarea>
-        <input on:input={() => submitModification(undefined, !publicURL, undefined)} type="checkbox" bind:checked={publicURL}> public url
-        <input on:input={() => submitModification(undefined, undefined, !publicPane)} type="checkbox" bind:checked={publicPane}> public pane
+        <textarea on:input={(e) => submitModification(e.target.value, undefined, undefined, undefined)} bind:value={textAreaMarkdown} placeholder="empty"></textarea>
+        <input on:input={() => submitModification(undefined, !publicURL, undefined, undefined)} type="checkbox" bind:checked={publicURL}> public url
+        <input on:input={() => submitModification(undefined, undefined, !publicPane, undefined)} type="checkbox" bind:checked={publicPane}> public pane
+        <input on:input={() => submitModification(undefined, undefined, undefined, !pinned)} type="checkbox" bind:checked={pinned}> pinned
         <br>
         <button on:click={() => {selected = undefined}}>exit</button>
         
@@ -162,6 +167,7 @@
     {/if}
 
     {#each notes as note (note.id)}
+    {#if note.pinned}
     <div class="border-2 border-solid w-fit">
         
         {note.id}
@@ -169,6 +175,19 @@
         {note.markdown}
         <button on:click={() => remove(note.id)} class="border-2 border-solid">remove</button>
     </div>
+    {/if}
+    {/each}
+
+    {#each notes as note (note.id)}
+    {#if !note.pinned}
+    <div class="border-2 border-solid w-fit">
+        
+        {note.id}
+        <button on:click={() => {selected = note}} class="border-2 border-solid">select</button>
+        {note.markdown}
+        <button on:click={() => remove(note.id)} class="border-2 border-solid">remove</button>
+    </div>
+    {/if}
     {/each}
 </div>
 {/if}

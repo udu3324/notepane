@@ -5,7 +5,7 @@ export async function POST({ request }) {
     const auth_header = request.headers.get("Authorization")
     const key = auth_header?.replace("Bearer ", "").trim().replace("Bearer", "")
 
-    let { id, markdown, public_url, public_pane } = await request.json()
+    let { id, markdown, public_url, public_pane, pinned } = await request.json()
 
     //convert to bool (if present)
     if (typeof public_url === "string") {
@@ -13,6 +13,9 @@ export async function POST({ request }) {
     }
     if (typeof public_pane === "string") {
         public_pane = (public_pane === 'true')
+    }
+    if (typeof pinned === "string") {
+        pinned = (pinned === 'true')
     }
 
     if (!key) {
@@ -33,14 +36,14 @@ export async function POST({ request }) {
             }), { status: 400 })
     }
 
-    if (markdown === undefined && public_url === undefined && public_pane === undefined) {
+    if (markdown === undefined && public_url === undefined && public_pane === undefined && pinned === undefined) {
         return new Response(JSON.stringify({
-                error: "need to provide atleast markdown, public url, or public pane",
+                error: "need to provide atleast markdown, public url, public pane, or pinned",
             }), { status: 400 })
     }
     
 
-    const data = await Notes.modifyNote(id, markdown, public_url, public_pane)
+    const data = await Notes.modifyNote(id, markdown, public_url, public_pane, pinned)
     
     return new Response(JSON.stringify(data), { status: 200 })
 }
