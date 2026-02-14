@@ -1,6 +1,6 @@
 import { PASSWORD } from "$env/static/private"
 import * as Notes from '$lib/server/notes'
-import { consume } from "$lib/server/ratelimit"
+import { consume, ratelimit } from "$lib/server/ratelimit"
 
 export async function POST({ request, getClientAddress }) {
     const ip = request.headers.get("x-forwarded-for") || getClientAddress()
@@ -9,7 +9,7 @@ export async function POST({ request, getClientAddress }) {
     if (!success) {
         return new Response(JSON.stringify({
                 error: "ratelimited",
-            }), { status: 400 })
+            }), { status: 429 })
     }
     
     const auth_header = request.headers.get("Authorization")
@@ -52,7 +52,8 @@ export async function POST({ request, getClientAddress }) {
             }), { status: 400 })
     }
     
-
+    await ratelimit.delete(ip)
+    
     const data = await Notes.modifyNote(id, markdown, public_url, public_pane, pinned)
     
     return new Response(JSON.stringify(data), { status: 200 })

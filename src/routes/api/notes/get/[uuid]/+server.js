@@ -1,6 +1,6 @@
 import { PASSWORD } from "$env/static/private"
 import * as Notes from '$lib/server/notes'
-import { consume } from "$lib/server/ratelimit"
+import { consume, ratelimit } from "$lib/server/ratelimit"
 
 export async function GET({ params, request, getClientAddress }) {
     const ip = request.headers.get("x-forwarded-for") || getClientAddress()
@@ -9,7 +9,7 @@ export async function GET({ params, request, getClientAddress }) {
     if (!success) {
         return new Response(JSON.stringify({
                 error: "ratelimited",
-            }), { status: 400 })
+            }), { status: 429 })
     }
 
     const uuid = params.uuid
@@ -17,13 +17,13 @@ export async function GET({ params, request, getClientAddress }) {
     if (!uuid) {
         return new Response(JSON.stringify({
                 error: "no uuid provided",
-            }), { status: 404 })
+            }), { status: 400 })
     }
 
     if (!uuid.match(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)) {
         return new Response(JSON.stringify({
                 error: "invalid uuid provided",
-            }), { status: 404 })
+            }), { status: 400 })
     }
 
     let sensitive = await Notes.getNoteByUUID(uuid)
@@ -35,12 +35,11 @@ export async function GET({ params, request, getClientAddress }) {
     }
     
     if (sensitive.public_url) {
-        delete sensitive.id
-        delete sensitive.public_url
-        delete sensitive.public_pane
-        delete sensitive.pinned
-        
-        return new Response(JSON.stringify(sensitive), { status: 200 })
+        return new Response(JSON.stringify({
+            created_at: sensitive.created_at,
+            modified_at: sensitive.modified_at,
+            markdown: sensitive.markdown
+        }), { status: 200 })
     }
 
     const auth_header = request.headers.get("Authorization")
@@ -57,6 +56,8 @@ export async function GET({ params, request, getClientAddress }) {
                 error: "invalid key",
             }), { status: 400 })
     }
+
+    await ratelimit.delete(ip)
     
     return new Response(JSON.stringify(sensitive), { status: 200 })
 }
