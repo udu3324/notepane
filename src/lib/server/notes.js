@@ -124,3 +124,27 @@ export async function removeNote(id) {
 
     return note
 }
+
+// delete unneccesary information
+export function sanitizeNote(sensitive) {
+
+    let note = {
+        created_at: sensitive.created_at,
+        modified_at: sensitive.modified_at,
+        markdown: sensitive.markdown,
+        public_url: sensitive.public_url,
+        public_pane: sensitive.public_pane,
+        public_uuid: sensitive.public_uuid
+    }
+
+    if (!note.public_url) {
+        delete note.public_uuid
+        delete note.public_url
+    }
+
+    if (!note.public_pane) {
+        delete note.public_pane
+    }
+
+    return note
+}

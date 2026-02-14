@@ -17,12 +17,10 @@ export async function GET({ request, getClientAddress }) {
     sensitive.forEach(note => {
         if (!note.public_pane) return
         
-        safe.push({
-            created_at: note.created_at,
-            modified_at: note.modified_at,
-            markdown: note.markdown
-        })
+        safe.push(Notes.sanitizeNote(note))
     })
+
+    //console.log(safe)
     
     return new Response(JSON.stringify(safe), { status: 200 })
 }

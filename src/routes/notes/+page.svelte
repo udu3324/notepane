@@ -2,6 +2,7 @@
 	import { goto } from "$app/navigation";
     import { resolve } from "$app/paths";
 	import { onMount } from "svelte";
+	import Pane from "./Pane.svelte";
 
     let authenticated = false
 
@@ -111,7 +112,7 @@
     }
 
     function submitModification(markdown, publicURL, publicPane, pinned) {
-        console.log(markdown, publicURL, publicPane, pinned)
+        //console.log(markdown, publicURL, publicPane, pinned)
         fetch('/api/notes/modify', {
             method: "POST",
             headers: {
@@ -160,34 +161,36 @@
         <input on:input={() => submitModification(undefined, !publicURL, undefined, undefined)} type="checkbox" bind:checked={publicURL}> public url
         <input on:input={() => submitModification(undefined, undefined, !publicPane, undefined)} type="checkbox" bind:checked={publicPane}> public pane
         <input on:input={() => submitModification(undefined, undefined, undefined, !pinned)} type="checkbox" bind:checked={pinned}> pinned
+        <button on:click={remove(selected.id)}>delete note</button>
         <br>
         <button on:click={() => {selected = undefined}}>exit</button>
         
     </div>
     {/if}
 
-    {#each notes as note (note.id)}
-    {#if note.pinned}
-    <div class="border-2 border-solid w-fit">
-        
-        {note.id}
-        <button on:click={() => {selected = note}} class="border-2 border-solid">select</button>
-        {note.markdown}
-        <button on:click={() => remove(note.id)} class="border-2 border-solid">remove</button>
+    <div class="p-3 gap-2 flex flex-wrap bg-amber-400">
+        {#each notes as note (note.id)}
+        {#if note.pinned}
+        <button on:click={() => {selected = note}}>
+            <Pane note={note}/>
+        </button>
+        {/if}
+        {/each}
     </div>
-    {/if}
-    {/each}
 
-    {#each notes as note (note.id)}
-    {#if !note.pinned}
-    <div class="border-2 border-solid w-fit">
-        
-        {note.id}
-        <button on:click={() => {selected = note}} class="border-2 border-solid">select</button>
-        {note.markdown}
-        <button on:click={() => remove(note.id)} class="border-2 border-solid">remove</button>
+
+    <div class="p-3 gap-2 flex flex-wrap">
+        {#each notes as note (note.id)}
+        {#if !note.pinned}
+        <button on:click={() => {selected = note}}>
+            <Pane note={note}/>
+        </button>
+        {/if}
+        {/each}
     </div>
-    {/if}
-    {/each}
+    
 </div>
 {/if}
+
+<style>
+</style>

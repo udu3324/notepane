@@ -35,11 +35,7 @@ export async function GET({ params, request, getClientAddress }) {
     }
     
     if (sensitive.public_url) {
-        return new Response(JSON.stringify({
-            created_at: sensitive.created_at,
-            modified_at: sensitive.modified_at,
-            markdown: sensitive.markdown
-        }), { status: 200 })
+        return new Response(JSON.stringify(Notes.sanitizeNote(sensitive)), { status: 200 })
     }
 
     const auth_header = request.headers.get("Authorization")
