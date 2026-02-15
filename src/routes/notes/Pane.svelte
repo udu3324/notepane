@@ -47,11 +47,11 @@
 
     .outer {
         @apply border-t-2 border-l-2 border-r-8 border-solid;
-        @apply w-fit h-fit;
+        @apply w-fit h-fit max-w-svw;
     }
 
     .textarea {
-        @apply resize min-w-52 min-h-52 w-52 h-52 px-1 text-left;
+        @apply resize min-w-52 min-h-52 w-52 h-52 px-1 text-left max-w-svw;
         overflow: auto;
     }
 
