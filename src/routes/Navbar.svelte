@@ -41,9 +41,9 @@
 
 	<button on:click={toggle} class="outer p-1 px-2 text-(--theme) cursor-pointer">
 		{#if darkmode}
-		<i class="fa-regular fa-sun"></i>
+		<i class="fa-solid fa-sun"></i>
 		{:else}
-		<i class="fa-solid fa-moon"></i>
+		<i class="fa-regular fa-moon"></i>
 		{/if}
 	</button>
 </div>
