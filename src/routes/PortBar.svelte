@@ -52,8 +52,8 @@
                     markdown: obj.textContent,
                     public_url: false,
                     public_pane: false,
-                    date_created: created.toISOString(),
-                    date_modified: modified.toISOString()
+                    created_at: created.toISOString(),
+                    modified_at: modified.toISOString()
                 })
             })
             .then(response=>response.json())

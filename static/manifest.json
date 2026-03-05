@@ -1,0 +1,30 @@
+{
+    "name": "Notepane",
+    "description": "A note taking app that allows you to easily take notes and share them to the public.",
+    "display": "standalone",
+    "start_url": "/",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "assets/144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "assets/512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "assets/app-screenshot.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "icon"
+        }
+    ]
+}
