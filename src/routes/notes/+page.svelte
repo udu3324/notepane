@@ -192,12 +192,9 @@
     </div>
 
     <div class="p-3 gap-2 flex flex-wrap border-b-2 border-(--theme)">
-        
         {#each notes as note (note.id)}
         {#if note.pinned}
-        <button on:click={() => {selected = note}}>
-            <Pane note={note}/>
-        </button>
+        <Pane note={note} onFocus={() => {selected = note}}/>
         {/if}
         {/each}
     </div>
@@ -206,9 +203,7 @@
     <div class="p-3 gap-2 flex flex-wrap">
         {#each notes as note (note.id)}
         {#if !note.pinned}
-        <button on:click={() => {selected = note}}>
-            <Pane note={note}/>
-        </button>
+        <Pane note={note} onFocus={() => {selected = note}}/>
         {/if}
         {/each}
     </div>
