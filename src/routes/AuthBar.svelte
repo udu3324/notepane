@@ -54,9 +54,9 @@
 {:else if status === "authorized"}
 <button class="cursor-pointer outer p-1" on:click={logout}>logout</button>
 {#if page.url.pathname === "/notes"}
-<button class="cursor-pointer outer p-1" on:click={() => goto(resolve("/"))}>exit view</button>
+<button class="cursor-pointer outer p-1" on:click={() => goto(resolve("/"))}>exit</button>
 {:else}
-<button class="cursor-pointer outer p-1" on:click={() => goto(resolve("/notes"))}>manage notes</button>
+<button class="cursor-pointer outer p-1" on:click={() => goto(resolve("/notes"))}>manage</button>
 {/if}
 {/if}
 

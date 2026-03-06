@@ -25,6 +25,18 @@ docker compose up db
 npm run dev
 ```
 
+## enviornment variables
+
+```env
+
+PASSWORD=1234 # this is the password to notepane
+
+POSTGRES_USER=user
+POSTGRES_PASSWORD=pass # have a secure password!
+POSTGRES_DB=mydb
+
+BACKUP_INTERVAL=86400
+```
 
 ## production
 
