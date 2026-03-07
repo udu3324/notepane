@@ -1,5 +1,6 @@
 <script>
 	import { resolve } from "$app/paths";
+	import { between } from "$lib";
 
     let { onFocus, note } = $props()
 
@@ -17,18 +18,13 @@
         //tolerance
         if (between(x, diffX, 5) && between(y, diffY, 5)) {
             onFocus?.(event)
-        }        
+        }
     }
 
     function pointerDownEvent(event) {
         x = event.x
         y = event.y
     }
-
-    function between(reference, check, tolerance) { //https://stackoverflow.com/a/6454237/16216937
-        return Math.abs(reference - check) <= tolerance
-    }
-
 
     let breakText = $state("break-none")
     let footerText = note.created_at.substring(0, 10) //`${note.created_at.substring(0, 10)} - ${note.modified_at.substring(0, 10)}`
@@ -46,7 +42,7 @@
 
 <div class="outer leading-0">
     <!-- <textarea bind:this={textArea} disabled={true} placeholder="empty notepane">{note.markdown}</textarea> -->
-    <button on:click={internalClick} on:touchend={internalClick} on:pointerdown={pointerDownEvent} on:on:touchstart={pointerDownEvent}>
+    <button on:click={internalClick} on:touchend={internalClick} on:pointerdown={pointerDownEvent} >
         <div class="textarea leading-6 {breakText}">{note.markdown}</div>
     </button>
     

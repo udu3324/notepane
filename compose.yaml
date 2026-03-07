@@ -48,7 +48,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       BACKUP_INTERVAL: ${BACKUP_INTERVAL}
     volumes:
-      - ./backups:/backups
+      - db_backups:/backups
     command: |-
       sh -c '
       mkdir -p /backups
@@ -63,3 +63,4 @@ services:
 
 volumes:
   postgres_data:
+  db_backups:

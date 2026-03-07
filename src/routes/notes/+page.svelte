@@ -4,6 +4,7 @@
 	import { onMount } from "svelte";
 	import Pane from "./Pane.svelte";
 	import Navbar from "../Navbar.svelte";
+	import { between } from "$lib";
 
     let authenticated = false
 
@@ -140,11 +141,20 @@
         })
     }
 
+    let x, y
     function unselect(event) {
         if (event.pointerType === "touch") {
             return
         }
-        selected = undefined
+        
+        if (between(x, event.clientX, 5) && between(y, event.clientY, 5)) {
+            selected = undefined
+        }
+    }
+
+    function pointerDownEvent(event) {
+        x = event.clientX
+        y = event.clientY
     }
 </script>
 
@@ -152,7 +162,7 @@
 {#if selected}
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div on:click={unselect} on:touchstart={unselect} class="fixed grid h-screen w-screen place-content-center bg-black/50">
+<div on:click={unselect} on:pointerdown={pointerDownEvent} on:touchstart={unselect} class="fixed grid h-screen w-screen place-content-center bg-black/50">
     <div on:click|stopPropagation on:touchstart|stopPropagation id="selection" class="border-t-2 border-l-2 border-r-8 border-solid bg-(--theme-background) border-(--theme)">
         <textarea on:input={(e) => submitModification(e.target.value, undefined, undefined, undefined)} bind:value={textAreaMarkdown} placeholder="empty" class="w-full min-h-96 min-w-96 max-h resize" style="max-width: var(--pane-width-max);"></textarea>
 
