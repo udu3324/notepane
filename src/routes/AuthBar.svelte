@@ -54,7 +54,7 @@
 {:else if status === "authorized"}
 <button class="cursor-pointer outer p-1" on:click={logout}>logout</button>
 {#if page.url.pathname === "/notes"}
-<button class="cursor-pointer outer p-1" on:click={() => goto(resolve("/"))}>exit</button>
+<!--<button class="cursor-pointer outer p-1" on:click={() => goto(resolve("/"))}>exit</button>-->
 {:else}
 <button class="cursor-pointer outer p-1" on:click={() => goto(resolve("/notes"))}>manage</button>
 {/if}
@@ -66,6 +66,7 @@
 
 	.outer {
         @apply border-t-2 border-l-2 border-r-4 border-b-8 border-solid;
+        @apply hover:outline-2 hover:outline-(--accent);
         @apply border-(--theme) text-(--theme);
     }
 </style>

@@ -154,9 +154,9 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div on:click={unselect} on:touchstart={unselect} class="fixed grid h-screen w-screen place-content-center bg-black/50">
     <div on:click|stopPropagation on:touchstart|stopPropagation id="selection" class="border-t-2 border-l-2 border-r-8 border-solid bg-(--theme-background) border-(--theme)">
-        <textarea on:input={(e) => submitModification(e.target.value, undefined, undefined, undefined)} bind:value={textAreaMarkdown} placeholder="empty" class="w-full min-h-96 min-w-96 max-w-svw max-h resize"></textarea>
+        <textarea on:input={(e) => submitModification(e.target.value, undefined, undefined, undefined)} bind:value={textAreaMarkdown} placeholder="empty" class="w-full min-h-96 min-w-96 max-h resize" style="max-width: var(--pane-width-max);"></textarea>
 
-        <div class="bg-(--theme) text-white flex justify-between font-mono dark:text-black">
+        <div class="bg-(--theme) text-(--theme-background) flex justify-between font-mono">
             <button on:click={remove(selected.id)} class="pl-2">Delete</button>
 
             <div class="text-xs place-content-center">
@@ -180,9 +180,9 @@
 <div>
     <div class="flex place-content-center m-3">
         <div class="border-t-2 border-l-2 border-r-8 border-solid border-(--theme)">
-            <textarea bind:value={input} type="text" placeholder="markdown" class="w-full min-h-52 min-w-96 max-w-svw resize"></textarea>
+            <textarea bind:value={input} type="text" placeholder="markdown" class="w-full min-h-52 min-w-96 resize" style="max-width: var(--pane-width-max);"></textarea>
         
-            <div class="flex justify-between text-white bg-(--theme) font-mono w-full dark:text-black">
+            <div class="flex justify-between text-(--theme-background) bg-(--theme) font-mono w-full">
                 <button on:click={add} class="pl-2 hover:underline">Publish</button>
 
                 <div class="text-xs place-content-center">
@@ -196,21 +196,24 @@
         </div>
     </div>
 
-    <div class="p-3 gap-2 flex flex-wrap border-b-2 border-(--theme)">
-        {#each notes as note (note.id)}
-        {#if note.pinned}
-        <Pane note={note} onFocus={() => {selected = note}}/>
-        {/if}
-        {/each}
+    <div class="panes border-b-2 border-t-2 border-(--theme)">
+        <div class="panes-inner">
+            {#each notes as note (note.id)}
+            {#if note.pinned}
+            <Pane note={note} onFocus={() => {selected = note}}/>
+            {/if}
+            {/each}
+        </div>
     </div>
 
-
-    <div class="p-3 gap-2 flex flex-wrap">
-        {#each notes as note (note.id)}
-        {#if !note.pinned}
-        <Pane note={note} onFocus={() => {selected = note}}/>
-        {/if}
-        {/each}
+    <div class="panes">
+        <div class="panes-inner">
+            {#each notes as note (note.id)}
+            {#if !note.pinned}
+            <Pane note={note} onFocus={() => {selected = note}}/>
+            {/if}
+            {/each}
+        </div>
     </div>
     
 </div>
@@ -223,4 +226,20 @@
         @apply text-(--theme);
         margin-bottom: -6px;
     }
+
+    .panes {
+        @apply p-3 gap-2 flex flex-wrap;
+    }
+    .panes-inner {
+        @apply gap-2 flex flex-wrap;
+    }
+
+    @media only screen and (max-device-width: 570px) {
+		.panes {
+            @apply place-content-center;
+		}
+        .panes-inner {
+            @apply grid grid-flow-row grid-cols-2 gap-2;
+        }
+	}
 </style>

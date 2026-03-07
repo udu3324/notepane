@@ -116,9 +116,12 @@
 {/if}
 
 <style lang="postcss">
+    @import 'tailwindcss';
+
 	.outer {
         @apply border-t-2 border-l-2 border-r-4 border-b-8 border-solid;
         @apply w-fit h-fit;
+        @apply hover:outline-2 hover:outline-(--accent);
         @apply border-(--theme) text-(--theme);
     }
 </style>

@@ -6,6 +6,7 @@
     --accent: theme('colors.blue.500');
     --theme: theme('colors.zinc.900');
     --theme-background: theme('colors.white');
+    --pane-width-max: calc(100vw - 8px - 2px - (3 * (var(--spacing, 0.25rem) * 3)));
 }
 
 .dark {

@@ -26,7 +26,7 @@
     })
 </script>
 
-<div class="grid h-screen w-screen place-content-center">
+<div class="grid h-screen w-screen place-content-center text-(--theme)">
     {#if status === "loaded"}
     <Pane note={note}/>
     {:else if status === "invalid"}

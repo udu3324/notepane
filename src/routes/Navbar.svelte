@@ -1,4 +1,6 @@
 <script>
+	import { goto } from "$app/navigation";
+	import { resolve } from "$app/paths";
 	import { onMount } from "svelte";
 	import AuthBar from "./AuthBar.svelte";
 	import PortBar from "./PortBar.svelte";
@@ -34,18 +36,13 @@
 </script>
 
 <div class="flex gap-2 p-3">
-    <div class="outer p-1 text-(--theme)">
-		<h1>notepane</h1>
-	</div>
-
-	<AuthBar/>
-
+	<button class="outer p-1" on:click={() => goto(resolve("/"))}>notepane</button>
 	
-
+	<AuthBar/>
 	<PortBar/>
 
 	<div class="absolute right-0 pr-3">
-		<button on:click={toggle} class="outer p-1 px-2 text-(--theme) cursor-pointer">
+		<button on:click={toggle} class="outer p-1 px-2">
 		{#if darkmode}
 		<i class="fa-regular fa-sun"></i>
 		{:else}
@@ -58,6 +55,7 @@
 <style lang="postcss">
 	.outer {
         @apply border-t-2 border-l-2 border-r-4 border-b-8 border-solid;
-        @apply w-fit h-fit;
+		@apply cursor-pointer hover:outline-2 hover:outline-(--accent);
+        @apply w-fit h-fit text-(--theme);
     }
 </style>
