@@ -12,6 +12,18 @@ Exports from Notepane will be formatted in .json files.
 
 All endpoints have a default ratelimit of 10 requests every 20 seconds and gets reset if sucessfully authenticated.
 
+### endpoint authentication
+
+To authenticate with an endpoint, use your `PASSWORD` enviornment variable as the key. This should be in the **Authorization Header** of the API request.
+
+```js
+fetch("https://notepane-self-host-url.com/api/auth", {
+    headers: {
+      "Authorization": "Bearer PASSWORD.ENV.HERE"
+    }
+})
+```
+
 |type  |endpoint           |authentication|markdown|public_url|public_pane|id |pinned|created_at|modified_at|
 |------|-------------------|--------------|--------|----------|-----------|---|------|----------|-----------|
 |GET   |`/auth`            |TRUE          |        |          |           |   |      |          |           |
