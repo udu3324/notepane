@@ -46,21 +46,40 @@ npm run dev
 ## enviornment variables
 
 ```env
+# this is the password to notepane
+PASSWORD=1234
 
-PASSWORD=1234 # this is the password to notepane
+POSTGRES_USER=postgres
+# have a secure password!
+POSTGRES_PASSWORD=pass
+# either "process.env.DOCKER_ENV ? 'db' : 'localhost'" in development, but basically your pgdb's host ip
+POSTGRES_HOSTNAME=db
+POSTGRES_DB=notepanedb
 
-POSTGRES_USER=user
-POSTGRES_PASSWORD=pass # have a secure password!
-POSTGRES_HOSTNAME=db # default to either process.env.DOCKER_ENV ? 'db' : 'localhost'
-POSTGRES_DB=mydb
-
+# in seconds
 BACKUP_INTERVAL=86400
 
+# front facing url of notepane
 ORIGIN=http://localhost:3000
 ```
 
 ## production
 
+You can either host Notepane fully with docker or only the postgres db. This would allow you to self-host the db and have a service like Vercel to handle the site.
+
+Both methods require doing - 
 ```sh
 docker compose up
+```
+
+But make sure you import the right adapter - 
+```js
+// svelte.config.js
+//
+
+// full docker deployment
+import adapter from '@sveltejs/adapter-node';
+
+// half docker (self-hosted db) half 3rd party site host
+import adapter from '@sveltejs/adapter-vercel';
 ```

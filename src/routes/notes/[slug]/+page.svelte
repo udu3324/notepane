@@ -1,7 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import Pane from '../Pane.svelte';
-
+	import { page } from '$app/stores';
+    
     export let data
 
     let status = "loading"
@@ -25,6 +26,17 @@
         })
     })
 </script>
+
+<svelte:head>
+    <meta name="description" content={status === "loaded" && note ? note.markdown.substring(0, 60) : ''} />
+    
+    <meta property="og:type" content="article"/>
+    <meta property="og:url" content={$page.url.origin + $page.url.pathname} />
+    <meta property="og:description" content={status === "loaded" && note ? note.markdown.substring(0, 60) : ''} />
+    <meta property="article:published_time" content={status === "loaded" && note ? note.created_at : ''}/>
+    <meta property="article:modified_time" content={status === "loaded" && note ? note.modified_at : ''}/>
+</svelte:head>
+
 
 <div class="grid h-screen w-screen place-content-center text-(--theme)">
     {#if status === "loaded"}
