@@ -50,6 +50,7 @@
                 get()
             } else {
                 //invalid key
+                localStorage.removeItem('key')
                 goto(resolve("/"))
             }
         })
