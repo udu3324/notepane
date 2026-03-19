@@ -5,6 +5,8 @@
 	import Pane from "./Pane.svelte";
 	import Navbar from "../Navbar.svelte";
 	import { between } from "$lib";
+	//import { Carta, MarkdownEditor } from "carta-md";
+    //import 'carta-md/default.css';
 
     let authenticated = false
 
@@ -170,6 +172,14 @@
         x = event.clientX
         y = event.clientY
     }
+    /*
+    const carta = new Carta({
+		// Remember to use a sanitizer to prevent XSS attacks
+		// sanitizer: mySanitizer
+	});
+
+	let valueMD = ""
+    */
 </script>
 
 
@@ -205,7 +215,7 @@
     <div class="flex place-content-center m-3">
         <div class="border-t-2 border-l-2 border-r-8 border-solid border-(--theme)">
             <textarea bind:value={input} type="text" placeholder="markdown" class="w-full min-h-52 min-w-96 resize" style="max-width: var(--pane-width-max);"></textarea>
-        
+            <!--<MarkdownEditor bind:valueMD {carta} />-->            
             <div class="flex justify-between text-(--theme-background) bg-(--theme) font-mono w-full">
                 <button on:click={add} class="pl-2 hover:underline">Publish</button>
 
