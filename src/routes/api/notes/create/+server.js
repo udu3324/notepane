@@ -1,6 +1,7 @@
 import { PASSWORD } from "$env/static/private"
 import * as Notes from '$lib/server/notes'
 import { consume, ratelimit } from "$lib/server/ratelimit"
+import { sendWebhook } from "$lib/server/webhook"
 
 export async function POST({ request, getClientAddress }) {
     const ip = request.headers.get("x-forwarded-for") || getClientAddress()
@@ -19,12 +20,14 @@ export async function POST({ request, getClientAddress }) {
     
 
     if (!key) {
+        sendWebhook(`\`${ip}\` - /notes/create - no key provided`)
         return new Response(JSON.stringify({
                 error: "no key provided",
             }), { status: 400 })
     }
 
     if (key !== PASSWORD) {
+        sendWebhook(`\`${ip}\` - /notes/create - invalid key`)
         return new Response(JSON.stringify({
                 error: "invalid key",
             }), { status: 400 })

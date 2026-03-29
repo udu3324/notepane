@@ -1,6 +1,7 @@
 import { PASSWORD } from "$env/static/private"
 import * as Notes from '$lib/server/notes'
 import { consume, ratelimit } from "$lib/server/ratelimit"
+import { sendWebhook } from "$lib/server/webhook"
 
 export async function DELETE({ request, getClientAddress }) {
     const ip = request.headers.get("x-forwarded-for") || getClientAddress()
@@ -18,12 +19,14 @@ export async function DELETE({ request, getClientAddress }) {
     let { id } = await request.json()
 
     if (!key) {
+        sendWebhook(`\`${ip}\` - /notes/remove - no key provided`)
         return new Response(JSON.stringify({
                 error: "no key provided",
             }), { status: 401 })
     }
 
     if (key !== PASSWORD) {
+        sendWebhook(`\`${ip}\` - /notes/remove - invalid key`)
         return new Response(JSON.stringify({
                 error: "invalid key",
             }), { status: 401 })

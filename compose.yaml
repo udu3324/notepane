@@ -4,6 +4,7 @@ services:
       context: .
       args:
         PASSWORD: ${PASSWORD}
+        WEBHOOK: ${WEBHOOK}
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_HOSTNAME: ${POSTGRES_HOSTNAME}
@@ -22,6 +23,7 @@ services:
   
   db:
     image: postgres:latest
+    command: -c config_file=/etc/postgresql.conf
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -31,6 +33,8 @@ services:
     ports:
       - "5432:5432" 
     volumes:
+      - ./customPostgresql.conf:/etc/postgresql.conf:ro
+      - ./logs:/logs
       - postgres_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]

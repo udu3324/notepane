@@ -61,6 +61,9 @@ BACKUP_INTERVAL=86400
 
 # front facing url of notepane
 ORIGIN=http://localhost:3000
+
+# send some useful messages/alerts
+WEBHOOK=
 ```
 
 ## production
