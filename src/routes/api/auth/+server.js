@@ -16,14 +16,14 @@ export async function GET({ request, getClientAddress }) {
     const key = auth_header?.replace("Bearer ", "").trim().replace("Bearer", "")
     
     if (!key) {
-        sendWebhook(`\`${ip}\` - /api/auth - no key provided`)
+        sendWebhook(ip, `/api/auth - no key provided`)
         return new Response(JSON.stringify({
                 error: "no key provided",
             }), { status: 400 })
     }
 
     if (key !== PASSWORD) {
-        sendWebhook(`\`${ip}\` - /api/auth - invalid key`)
+        sendWebhook(ip, `/api/auth - invalid key`)
         return new Response(JSON.stringify({
                 error: `invalid key`,
             }), { status: 400 })
@@ -31,7 +31,7 @@ export async function GET({ request, getClientAddress }) {
 
     await ratelimit.delete(ip)
 
-    sendWebhook(`\`${ip}\` - /api/auth - authenticated`)
+    sendWebhook(ip, `/api/auth - authenticated`)
     return new Response(JSON.stringify({
             status: "authenticated",
         }), { status: 200 })

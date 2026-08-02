@@ -19,14 +19,14 @@ export async function DELETE({ request, getClientAddress }) {
     let { id } = await request.json()
 
     if (!key) {
-        sendWebhook(`\`${ip}\` - /notes/remove - no key provided`)
+        sendWebhook(ip, `/notes/remove - no key provided`)
         return new Response(JSON.stringify({
                 error: "no key provided",
             }), { status: 401 })
     }
 
     if (key !== PASSWORD) {
-        sendWebhook(`\`${ip}\` - /notes/remove - invalid key`)
+        sendWebhook(ip, `/notes/remove - invalid key`)
         return new Response(JSON.stringify({
                 error: "invalid key",
             }), { status: 401 })

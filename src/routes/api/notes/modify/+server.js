@@ -30,14 +30,14 @@ export async function POST({ request, getClientAddress }) {
     }
 
     if (!key) {
-        sendWebhook(`\`${ip}\` - /notes/modify - no key provided`)
+        sendWebhook(ip, `/notes/modify - no key provided`)
         return new Response(JSON.stringify({
                 error: "no key provided",
             }), { status: 400 })
     }
 
     if (key !== PASSWORD) {
-        sendWebhook(`\`${ip}\` - /notes/modify - invalid key`)
+        sendWebhook(ip, `/notes/modify - invalid key`)
         return new Response(JSON.stringify({
                 error: "invalid key",
             }), { status: 400 })
