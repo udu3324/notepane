@@ -284,11 +284,11 @@
             {#each notes as note (note.id)}
                 {#if !note.pinned}
                     {#if allActive}
-                        <Pane note={note} onFocus={() => {selected = note}}/>
+                        <Pane note={note} styleMobile="overflow: hidden" onFocus={() => {selected = note}}/>
                     {:else if urlActive && note.public_url}
-                        <Pane note={note} onFocus={() => {selected = note}}/>
+                        <Pane note={note} styleMobile="overflow: hidden" onFocus={() => {selected = note}}/>
                     {:else if publicActive && note.public_pane}
-                        <Pane note={note} onFocus={() => {selected = note}}/>
+                        <Pane note={note} styleMobile="overflow: hidden" onFocus={() => {selected = note}}/>
                     {/if}
                 {/if}
             {/each}

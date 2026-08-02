@@ -3,7 +3,7 @@
 	import { between } from "$lib";
 	import { MediaQuery } from "svelte/reactivity";
 
-    let { onFocus, note, styleClasses = "min-w-52 min-h-52 w-52 h-52" } = $props()
+    let { onFocus, note, styleMobile = "", styleClasses = "min-w-52 min-h-52 w-52 h-52" } = $props()
 
     let x, y
 
@@ -57,7 +57,7 @@
 <div class="outer leading-0">
     <!-- <textarea bind:this={textArea} disabled={true} placeholder="empty notepane">{note.markdown}</textarea> -->
     <button on:click={internalClick} on:touchend={internalClick} on:pointerdown={pointerDownEvent} >
-        <div class="textarea leading-6 select-text {breakText} {styleClasses}">{note.markdown}</div>
+        <div class="textarea leading-6 select-text {breakText} {styleClasses}" style="{styleMobile}">{note.markdown}</div>
     </button>
     
     <div class="footer flex justify-between">
