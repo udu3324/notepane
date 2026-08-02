@@ -22,6 +22,7 @@
     let deletedNotes = []
 
     let selected
+    let selectedReadyToShow = false
     let textAreaMarkdown
     let publicURL
     let publicPane
@@ -38,6 +39,7 @@
             publicPane = selected.public_pane
             pinned = selected.pinned
             confirmDelete = false
+            setTimeout(() => {selectedReadyToShow = true}, 10)
         }
     }
 
@@ -132,6 +134,7 @@
             notes = notes
 
             selected = undefined
+            selectedReadyToShow = false
         })
 
         confirmDelete = false
@@ -174,6 +177,7 @@
         
         if (between(x, diffX, 5) && between(y, diffY, 5)) {
             selected = undefined
+            selectedReadyToShow = false
         }
     }
 
@@ -210,7 +214,7 @@
 </script>
 
 
-{#if selected}
+{#if selectedReadyToShow}
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div on:click={unselect} on:pointerdown={pointerDownEvent} on:touchstart={unselect} class="fixed grid h-screen w-screen place-content-center bg-black/50">
